@@ -1,0 +1,329 @@
+ironborn_choose_the_way_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/ironborn_choose_the_way_decision.dds"
+	}
+
+	desc = ironborn_choose_the_way_decision_desc
+	selection_tooltip = ironborn_choose_the_way_decision_tooltip
+
+	decision_group_type = major
+	ai_check_interval = 1
+	is_shown = {
+		has_culture = culture:ironborn
+		is_adult = yes
+		is_ruler = yes
+		NOR = {
+			has_trait = the_old_way_follower
+			has_trait = the_new_way_follower
+		}
+	}
+
+	effect = {
+		custom_tooltip = ironborn_choose_the_way_decision_effect
+		trigger_event = ironborn_flavour_events.200
+		add_character_flag = { 
+			flag = ironborn_chose_the_way
+			years = 5
+		}
+			
+	}
+
+	ai_will_do = {
+        base = 100
+	}
+}
+
+
+ironborn_change_the_way_decision = {
+	picture = {
+	reference = "gfx/interface/illustrations/decisions/ironborn_choose_the_way_decision.dds"
+	}
+	decision_group_type = major
+	ai_check_interval = 0
+
+	desc = ironborn_change_the_way_decision_desc
+	selection_tooltip = ironborn_change_the_way_decision_tooltip
+
+	is_shown = {
+		has_culture = culture:ironborn
+		is_adult = yes
+		is_ruler = yes
+		OR = {
+			has_trait = the_old_way_follower
+			has_trait = the_new_way_follower
+		}
+		NOT = {
+			has_character_flag = ironborn_chose_the_way
+		}
+	}
+
+	cost = {
+		prestige = 1000
+	}
+
+	effect = {
+		remove_trait = the_old_way_follower
+		remove_trait = the_new_way_follower
+		custom_tooltip = ironborn_change_the_way_decision_effect
+		trigger_event = ironborn_flavour_events.200
+		add_character_flag = { 
+			flag = ironborn_chose_the_way
+			years = 10
+		}
+	}
+
+	ai_potential = {
+		always = no
+	}
+
+	ai_will_do = {
+		base = 0
+	}
+}
+
+taxing_salt_wifes_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/fp3_decision_tax_collector.dds"
+	}
+	desc = taxing_salt_wifes_decision_desc
+	selection_tooltip = taxing_salt_wifes_decision_tooltip
+
+	decision_group_type = major
+
+	ai_check_interval = 36
+	is_shown = {
+		has_title = title:k_the_iron_islands
+		has_culture = culture:ironborn
+		is_adult = yes
+		is_ruler = yes
+		OR = {
+			has_trait = greedy
+			has_trait = arbitrary
+			has_trait = the_new_way_follower
+		}
+	}
+	cooldown = {years = 25}
+	cost = {
+		prestige = 200
+	}
+	ai_potential = {
+		always = yes
+	}
+	ai_will_do = {
+		base = 10
+	}
+	effect = {
+		add_character_modifier = {
+			modifier = taxed_salt_wife_modifier
+			years = 25
+		}
+	}
+}
+
+taxing_septs_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/fp3_decision_tax_collector.dds"
+	}
+	desc = taxing_septs_decision_desc
+	selection_tooltip = taxing_septs_decision_tooltip
+
+	decision_group_type = major
+
+	ai_check_interval = 36
+
+	is_shown = {
+		has_title = title:k_the_iron_islands
+		has_culture = culture:ironborn
+		is_adult = yes
+		is_ruler = yes
+		OR = {
+			has_trait = greedy
+			has_trait = arbitrary
+			has_trait = the_old_way_follower
+		}
+	}
+	cooldown = {years = 25}
+	cost = {
+		prestige = 200
+	}
+	ai_potential = {
+		always = yes
+	}
+	ai_will_do = {
+		base = 30
+	}
+	effect = {
+		add_character_modifier = {
+			modifier = taxed_septs_modifier
+			years = 25
+		}
+	}
+}
+
+#
+
+#promote_mainland_religion_decision = {
+#
+#}
+ironborn_rebuild_the_iron_fleet = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/the_iron_fleet.dds"
+	}
+	decision_group_type = major
+	ai_check_interval = 0
+
+	desc = ironborn_rebuild_the_iron_fleet_desc
+	selection_tooltip = ironborn_rebuild_the_iron_fleet_tooltip
+
+	is_shown = {
+		has_title = title:k_the_iron_islands
+		has_culture = culture:ironborn
+		is_adult = yes
+		OR = {
+			has_trait = the_old_way_follower
+			has_trait = the_new_way_follower
+		}
+		NOT = {
+			has_character_flag = ironborn_rebuild_the_iron_fleet_permanent_cd
+		}
+	}
+
+	is_valid = {
+		gold >= 1000 #placeholder
+	}
+
+
+
+	cost = {
+		gold = 1000 #placeholder, change for gold
+	}
+
+	effect = {
+		custom_tooltip = ironborn_rebuild_the_iron_fleet_effect
+		dynasty = {
+			add_dynasty_modifier = {
+				modifier = masters_of_the_iron_fleet
+				years = 50
+			}
+		}
+		
+		add_character_flag = { 
+			flag = ironborn_rebuild_the_iron_fleet_permanent_cd
+		}	
+		add_character_flag = { 
+			flag = ironborn_rebuild_the_iron_fleet_rebuild_cd
+			years = 50
+		}
+	}
+
+	ai_potential = {
+		always = no
+	}
+
+	ai_will_do = {
+		base = 0
+	}
+}
+
+ironborn_repair_the_iron_fleet = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/the_iron_fleet.dds"
+	}
+	decision_group_type = major
+	ai_check_interval = 0
+	desc = ironborn_repair_the_iron_fleet_desc
+	selection_tooltip = ironborn_repair_the_iron_fleet_tooltip
+
+	is_shown = {
+		has_title = title:k_the_iron_islands
+		has_culture = culture:ironborn
+		is_adult = yes
+		OR = {
+			has_trait = the_old_way_follower
+			has_trait = the_new_way_follower
+		}
+		has_character_flag = ironborn_rebuild_the_iron_fleet_permanent_cd
+		NOT = {
+			has_character_flag = ironborn_rebuild_the_iron_fleet_rebuild_cd
+		}
+	}
+
+	cost = {
+		gold = 500 
+	}
+
+	effect = {
+		custom_tooltip = ironborn_repair_the_iron_fleet_effect
+		dynasty = {
+			add_dynasty_modifier = {
+				modifier = masters_of_the_iron_fleet
+				years = 50
+			}
+		}
+		
+		add_character_flag = { 
+			flag = ironborn_rebuild_the_iron_fleet_rebuild_cd
+			years = 50
+		}
+	}
+}
+
+widmnd_decision = {
+	picture = {
+		reference = "gfx/interface/illustrations/decisions/widmnd_decision.dds"
+	}
+	decision_group_type = major
+	ai_check_interval = 0 #TODO - write AI logic for this
+	desc = widmnd_decision_desc #placeholder
+	selection_tooltip = widmnd_decision_tooltip #placeholder
+
+	is_shown = {
+		#has_title = title:k_the_iron_islands
+		is_adult = yes
+		has_culture = culture:ironborn
+		has_religion = religion:drowned_god_religion
+		has_trait = the_old_way_follower
+		NOT = {
+			has_character_flag = widmnd_decision_cd
+		}
+	}
+
+	is_valid = {
+		custom_tooltip = {
+			text = widmnd_decision_tt.requirements
+			root = {	
+				any_character_war = {
+					OR = {
+						AND = {
+							primary_attacker = root
+							attacker_war_score <= -25 
+						}
+						AND = {
+							primary_defender = root
+							defender_war_score <= -25 
+						}
+					}
+				}
+			}
+		}	
+	}
+
+	cost = {
+		piety = 500  
+	}
+
+	effect = {
+		custom_tooltip = widmnd_decision_effect
+		add_character_flag = {
+			flag = widmnd_decision_cd
+			years = 10
+		}	
+		trigger_event = ironborn_flavour_events.013
+	}
+}
+
+
+#add_character_flag = { 
+#	flag = ironborn_rebuild_the_iron_fleet_cd
+#	years = 50
+#}

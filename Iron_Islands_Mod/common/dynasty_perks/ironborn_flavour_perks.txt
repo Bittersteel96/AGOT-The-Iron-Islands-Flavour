@@ -1,0 +1,73 @@
+﻿# GENERIC IRONBORN LEGACIES - Raiding/Wandering/Warfare hybrid
+#
+ironborn_flavour_harlaw_legacy_1 = { # Trade with the green lands. 
+	legacy = harlaw_legacy_track
+
+	can_be_picked = {
+		dynasty = dynasty:dynn_Harlaw
+	}
+
+	character_modifier = {
+		development_growth_factor = small_development_growth_gain
+		different_faith_opinion = 5
+	}
+	#Characters are slightly more likely to choose the New Way
+	effect = {
+		add_character_flag = {
+			flag = inclined_to_the_new_way
+		}
+	}
+	ai_chance = {
+		value = 11
+		if = {
+			limit = {
+				can_start_new_legacy_track_trigger = no
+			}
+			multiply = 0
+		}
+	}
+}
+
+ironborn_flavour_harlaw_legacy_2 = { #The Fiercest Bent Beneath the Scythe
+	legacy = harlaw_legacy_track
+
+	character_modifier = {
+		powerful_vassal_opinion = 25
+		vassal_levy_contribution_mult = 0.1
+		vassal_tax_contribution_mult = 0.1
+	}
+	#effect = {
+	#	#custom_description_no_bullet = { text = ironborn_legacy_2_effect }
+	#
+	#	}
+}
+
+ironborn_flavour_harlaw_legacy_3 = { #Prolific Dynasty 
+	legacy = harlaw_legacy_track
+
+	character_modifier = {
+		fertility = 0.15
+		monthly_dynasty_prestige = 0.10
+	}
+}
+
+ironborn_flavour_harlaw_legacy_4 = { #Power not to be Despised
+	legacy = harlaw_legacy_track
+
+	character_modifier = {
+		martial_per_prestige_level = 1
+		heavy_infantry_damage_mult = 0.1
+		heavy_infantry_toughness_mult = 0.1
+	}
+}
+
+ironborn_flavour_harlaw_legacy_5 = { #The wealthiest and most populous island
+	legacy = harlaw_legacy_track
+
+	character_modifier = {
+		levy_size = 0.2
+		levy_reinforcement_rate = 0.3
+		tax_mult = 0.25
+	}
+}
+

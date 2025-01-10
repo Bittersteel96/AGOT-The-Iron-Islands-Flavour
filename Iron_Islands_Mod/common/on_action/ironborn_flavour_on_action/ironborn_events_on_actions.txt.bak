@@ -1,0 +1,24 @@
+random_yearly_playable_pulse = {
+	on_actions = {
+		ironborn_flavour_yearly_events
+	}
+}
+
+ironborn_flavour_yearly_pulse = {
+	on_actions = {
+		ironborn_flavour_yearly_events
+		delay = { days = {30 60} }
+	}
+}
+
+ironborn_flavour_yearly_events {
+	random_events = {
+		chance_to_happen = 50
+		25 = ironborn_flavour_events.001 #THE WANDREING DROWNED PRIEST IS ASKING FOR FOOD AND SHELTER
+		15 = ironborn_flavour_events.004 #A BOOM OF HIGH-QUALITY IRON IN LORD'S MINE
+		20 = ironborn_flavour_events.006 #A THRALL KILLED AN IRONBORN IN A SQUABBLE
+		20 = ironborn_flavour_events.011 #A PROMISING BLACKSMITH THRALL
+		20 = ironborn_flavour_events.012 #MOCKED PAST
+		10 = ironborn_flavour_events.0100 #A QUESTION OF FAITH
+	}
+}

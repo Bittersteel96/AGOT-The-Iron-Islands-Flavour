@@ -1,0 +1,1362 @@
+namespace = ironborn_flavour_events
+
+##################################################################
+#   THE WANDREING DROWNED PRIEST IS ASKING FOR FOOD AND SHELTER  #
+##################################################################
+#                           0001-0003                            #
+##################################################################
+
+ironborn_flavour_events.001 = { #the walking priest is asking for food and shelter
+ 	type = character_event
+	title = ironborn_flavour_events.001.t
+	desc = ironborn_flavour_events.001.desc
+	theme = faith
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	right_portrait = {
+		character = scope:annoying_drownmen
+		animation = personality_zealous	
+	}
+
+	trigger = {
+		is_available = yes
+		has_religion = drowned_god_religion
+		is_landed = yes
+		NOT = {
+			has_character_flag = annoying_drownmen_cd
+		}
+	}
+	
+	immediate = { 
+		add_character_flag = {
+			flag = annoying_drownmen_cd
+			years = 5
+		}
+		create_character = { 
+			location = root.capital_province
+			template = ironborn_flavour_annoying_drownmen
+			save_scope_as = annoying_drownmen
+		}
+	}
+
+	#TODO: make sure the AI will most certainly pick the first option
+	option = {
+		name = ironborn_flavour_events.001.a #be a nice guy and provide some food
+		custom_tooltip = ironborn_flavour_events.001.a.tt
+		remove_short_term_gold = {10 30}
+		add_prestige = {50 100}
+		add_piety = {50 100}
+		hidden_effect = {
+			random_list = {
+				70 = {
+					trigger_event = { id = ironborn_flavour_events.002 days = 10 delayed = no } #chance to trigger religious debate 
+				}
+				30 = {
+					trigger_event = { id = ironborn_flavour_events.003 days = 10 delayed = no }
+				}
+			}
+		}
+		
+		ai_chance = {
+			base = 90
+			modifier = {
+				has_trait = the_old_way_follower
+				add = 30
+			}
+		}
+	}
+	
+	#refuse to prodive food and shelter
+	option = {
+		name = ironborn_flavour_events.001.b 
+		custom_tooltip = ironborn_flavour_events.001.b.tt
+		random_list = { #random chance of what setback will have that decision.  
+			50 = { 
+				add_prestige = -100
+				add_piety = -100
+				add_character_modifier = {
+					modifier = faithful_ironborn_smallfolk_rioting #popular opinion malus
+					years = 5
+				}
+			}
+
+			50 = { 
+					add_prestige = -100
+					add_piety = -100
+					add_character_modifier = {
+								modifier = unholy_ironborn_ruler #monthly piety penalty
+								years = 5
+					}
+			}
+		}	
+
+		ai_chance = {
+			base = 10
+			modifier = {
+				has_trait = cynical
+				add = 15
+			}
+			modifier = {
+				has_trait = greedy
+				add = 10
+			}
+			modifier = {
+				has_trait = arbitrary
+				add = 5
+			}
+		}
+	}
+
+	#Offer a luxurious reception. Spends more gold, receives greater Piety/Prestige
+	option = {
+		name = ironborn_flavour_events.001.c 
+		remove_short_term_gold = 30
+		add_prestige = {100 200}
+		add_piety = {200 300}
+		custom_tooltip = ironborn_flavour_events.001.c.tt
+		#your drowned men and co-religionists are impressed
+		random = { 
+			chance = 30
+			add_character_modifier = {
+				modifier = faithful_ironborn_impressed
+				years = 3
+			}
+		}
+		hidden_effect = {
+			random_list = {
+				70 = { #PLACEHOLDER VALUE
+					trigger_event = { id = ironborn_flavour_events.002 days = 10 delayed = no } #chance to trigger religious debate 
+				}
+				30 = { #PLACEHOLDER VALUE
+					trigger_event = { id = ironborn_flavour_events.003 days = 10 delayed = no } #end of chain
+				}
+			}
+		}
+
+		ai_chance = {
+			base = 15
+			modifier = {
+				has_trait = generous
+				add = 15
+			}
+			modifier = {
+				has_trait = zealous
+				add = 15
+			}
+			modifier = {
+				has_trait = the_old_way_follower
+				add = 30
+			}
+		}
+	}
+}
+
+#the Drowned man challenges you for a religious debate to test your faith
+ironborn_flavour_events.002 = { 
+ 	type = character_event
+	title = ironborn_flavour_events.002.t
+	desc = ironborn_flavour_events.002.desc
+	theme = faith
+	
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	right_portrait = {
+		character = scope:annoying_drownmen
+		animation = personality_zealous	
+	}
+
+	#Engage in Vigorous Debate
+	option = { 
+		name = ironborn_flavour_events.002.a
+		duel = {
+			skill = learning
+			value = 8
+			10 = {
+				modifier = {
+					add = scope:duel_value
+				}
+				add_piety = minor_piety_gain
+				add_learning_lifestyle_xp = medium_lifestyle_xp
+			}
+
+			10 = {
+				add_prestige = -100
+				add_piety = -100
+				add_character_modifier = {
+					modifier = faithful_ironborn_dissappointed #opinion decrease coz your vassals doubt your conviction
+					years = 5
+				}
+			}
+		}
+		trigger_event = {id = ironborn_flavour_events.003 days = 10 delayed = no} #end of chain	
+	}
+	
+	option = { #Impress the Drowned Man with your interest in the Drowned God
+		name = ironborn_flavour_events.002.b	
+		custom_tooltip = ironborn_flavour_events.002.b.tt
+		trigger = {
+			has_trait = zealous
+			is_ai = no
+		}
+		add_piety = 100
+		add_courtier = scope:annoying_drownmen #need double check if stats are good enough
+	}
+	
+	#Being challenged in your own home is untenable! Attempt to poison the Drowned Man
+	option = { 
+		name = ironborn_flavour_events.002.c 
+		custom_tooltip = ironborn_flavour_events.002.c.tt
+		trigger = {
+				OR = {
+					has_trait = cruel
+					has_trait = cynical
+					has_trait = arbitrary
+					has_trait = deceitful
+					has_trait = ambitious
+					has_trait = wrathful
+					has_trait = arrogant
+					has_trait = vengeful
+				}
+		}
+		duel = {
+			skill = intrigue
+			value = 10
+			
+			15 = { #you succesfully poisoned the annoying priest. No one dares to talk about God with you
+				desc = ironborn_flavour_events.002.c.success.tt
+				modifier = { 
+					add = scope:duel_value
+				}
+				dread_baseline_add = 10
+				add_intrigue_lifestyle_xp = major_lifestyle_xp
+				scope:annoying_drownmen = {
+					death = {
+						death_reason = death_mysterious
+					}
+				}
+			}
+			
+			15 = { #your poison attempt wasn't fruitful. The degree of your participation in the killing's attempt is unknown, yet the rumors are spreading about your "hostitality"
+				desc = ironborn_flavour_events.002.c.failure.tt
+				add_prestige = -100
+				add_piety = -300
+				add_character_modifier = {
+					modifier = faithful_ironborn_dissappointed 
+					years = 5
+				}
+			}
+			hidden_effect = {
+				trigger_event = {
+					id = ironborn_flavour_events.003 
+					days = 10
+					delayed = no
+				}
+			}
+		}
+	}
+	
+	#Impress the Drowned Man with vague pandering (either a silver tongue or a lot of patience is required!)
+	option = { 
+		name = ironborn_flavour_events.002.d 
+		trigger = {
+			OR = {
+				has_trait = gregarious
+				has_trait = diligent
+				has_trait = just
+				has_trait = patient
+			}
+		}
+		custom_tooltip = ironborn_flavour_events.002.d.tt 
+		#add_legitimacy = minor_legitimacy_gain
+		add_prestige = 100
+		
+		#end of the chain
+		trigger_event = {
+			id = ironborn_flavour_events.003 
+			days = 10 
+			delayed = no
+		} 
+	}
+
+	#refuse to answer and leave the priest be
+	option = {
+		name = ironborn_flavour_events.002.e
+		add_prestige = -50
+		add_piety = -50
+		random = {
+			chance = 30
+			add_character_modifier = {
+				modifier = faithful_ironborn_dissappointed #opinion decrease coz your vassals doubt your conviction
+				years = 5
+			}
+		}
+		trigger_event = {
+			id = ironborn_flavour_events.003 
+			days = 10 
+			delayed = no
+		} 
+	}
+
+	#'I serve the Drowned God with deeds, not words'
+	option = {
+		name = ironborn_flavour_events.002.f
+		custom_tooltip = ironborn_flavour_events.002.f.tt
+		trigger = {
+			OR = {
+				prowess >= 20
+				has_trait = reaver
+				has_trait = raider
+				has_trait = the_old_way_follower
+			}
+		}
+		add_prestige = 100
+		add_piety = 50
+		trigger_event = {
+			id = ironborn_flavour_events.003 
+			days = 10 
+			delayed = no
+		} 
+	}
+	#we need to find a new way, not to repeat the same mistake over and over again
+	option = {
+		name = ironborn_flavour_events.002.g
+		custom_tooltip = ironborn_flavour_events.002.g.tt
+		trigger = {
+			has_trait = the_new_way_follower
+		}
+		add_piety = -100
+		add_character_modifier = {
+			modifier = ironborn_learn_lessons_from_the_past
+			years = 3
+		}
+
+		trigger_event = {
+			id = ironborn_flavour_events.003 
+			days = 10 
+			delayed = no
+		} 
+	}
+}
+######################
+#PRIEST FINALLY LEAVES
+######################
+ironborn_flavour_events.003 = { #the priest leaves your realm 
+	type = character_event
+	title = ironborn_flavour_events.003.t
+	desc = ironborn_flavour_events.003.desc
+	theme = faith
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	right_portrait = {
+		character = scope:annoying_drownmen
+		animation = personality_zealous	
+	}
+
+	option = { #say farewell
+		name = ironborn_flavour_events.003.a
+		hidden_effect = {
+			scope:annoying_drownmen = {
+				death = {
+					death_reason = death_vanished
+				}
+			}
+		}
+	}
+
+	hidden_effect = {
+		scope:annoying_drownmen = {
+			death = {
+				death_reason = death_vanished
+			}
+		}		
+	}
+}
+
+##############################################
+# A BOOM OF HIGH-QUALITY IRON IN LORD'S MINE #
+##############################################
+#                   004-005                  #
+##############################################
+ironborn_flavour_events.004 = { #An event about a boom in high-quality iron ore production in one of your mines.
+	type = character_event
+	title = ironborn_flavour_events.004.t
+	desc = ironborn_flavour_events.004.desc
+	theme = stewardship_wealth_focus
+	
+	trigger = {
+		is_available = yes
+		is_landed = yes
+		any_held_county = {
+			title_province = { geographical_region = world_westeros_the_iron_islands }
+		}
+		culture = culture:ironborn
+		NOT = {
+			has_character_flag = ironborn_mining_event_cd
+		}
+	}
+	
+	right_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	immediate = { 
+		add_character_flag = {
+			flag = ironborn_mining_event_cd 
+			years = 5
+		}
+	}
+	option = {
+		name = ironborn_flavour_events.004.a #Trade it with the "green lands" people. 
+		custom_tooltip = ironborn_flavour_events.004.a.tt
+		capital_county = { #development bonus
+			change_development_progress_with_overflow = medium_development_progress_gain
+			add_county_modifier = {
+				modifier = trade_with_greenland_modifier
+				years = 3
+			}
+		}
+		add_gold = medium_gold_value
+	}	
+
+	option = {
+		name = ironborn_flavour_events.004.b #Sell whatever you mine and give me gold! 
+		custom_tooltip = ironborn_flavour_events.004.b.tt
+		trigger = {
+			has_trait = greedy
+		}
+		random_list = {
+			15 = {
+				add_gold = 50
+			}
+			
+			20 = {
+				add_gold = 75
+			}
+			50 = {
+				add_gold = 100
+			}
+			10 = {
+				add_gold = 150
+			}
+			5 = {
+				add_gold = 200
+			}
+		} 	
+	}
+
+	option = { #Use the high-quality ore to upgrade equipment of your own and your heavy infantry. Troop bonus quiliy, advantage bonus, prowess bonus
+		name = ironborn_flavour_events.004.c
+		custom_tooltip = ironborn_flavour_events.004.c.tt 
+		add_character_modifier = {
+			modifier = armor_and_weapon_made_of_quality_iron
+			years = 3 
+		}
+	}
+
+	option = { #Craft a weapon from this ore
+		name = ironborn_flavour_events.004.d
+		custom_tooltip = ironborn_flavour_events.004.d.tt 
+		trigger_event = {
+			id = ironborn_flavour_events.005 #event in which you can choose what you want to be crafted
+			delayed = no
+		}
+	}
+}
+
+
+ironborn_flavour_events.005 = {
+	type = character_event
+	title = ironborn_flavour_events.005.t
+	desc = ironborn_flavour_events.005.desc
+	theme = stewardship_wealth_focus
+	
+	right_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	option = { #an axe
+		name = ironborn_flavour_events.005.a
+		create_artifact = {
+			name = quality_ironborn_axe
+			description = quality_ironborn_axe_desc
+			type = axe
+			visuals = axe
+			rarity = masterwork
+			modifier = artifact_prowess_5_modifier
+			modifier = artifact_raid_speed_2_modifier
+			modifier = artifact_monthly_prestige_3_modifier
+		}
+	}
+
+	option = { #a sword
+		name = ironborn_flavour_events.005.b
+		create_artifact = {
+			name = quality_ironborn_sword
+			description = quality_ironborn_sword_desc
+			type = sword
+			visuals = sword
+			rarity = masterwork
+			modifier = artifact_prowess_4_modifier
+			modifier = artifact_knight_effectiveness_1_modifier
+			modifier = artifact_monthly_prestige_3_modifier
+		}
+	}
+}
+	#option = { #an armour
+	#	name = ironborn_flavour_events.005.c
+	#	create_artefact = {
+	#		name = quality_ironborn_armor
+			#description = quality_ironborn_armor_desc
+			#type = armor_mail
+			#visuals = armor
+			#modifier = artifact_prowess_3_modifier
+			#knight_effectiveness_mult = 0.05
+			#courtier_and_guest_opinion = 10}	
+		#}
+
+
+
+##############################################
+# A THRALL KILLED AN IRONBORN IN A SQUABBLE #
+##############################################
+#                                    	     #
+##############################################
+#During a random squabble, an unarmed thrall killed an ironborn.
+ironborn_flavour_events.006 = { 
+	type = character_event
+	title = ironborn_flavour_events.006.t
+	desc = ironborn_flavour_events.006.desc
+	theme = stewardship_duty_focus
+	override_background = burning_building
+	
+	trigger = {
+		is_available = yes
+		is_landed = yes
+		any_held_county = {
+			title_province = { geographical_region = world_westeros_the_iron_islands }
+		}
+		culture = culture:ironborn
+		NOT = {
+			has_character_flag = thrall_squabble_cd
+		}
+	}
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+
+	right_portrait = {
+		character = scope:rebel_thrall
+		animation = personality_vengeful
+	}
+
+	immediate = {
+		add_character_flag = {
+			flag = thrall_squabble_cd 
+			years = 5
+		}
+		create_character = {
+			location = root.location
+			template = ironborn_flavour_young_proud_thrall
+			save_scope_as = rebel_thrall
+		}
+	}
+	
+
+	#Execute the thrall publicly
+	option = {
+		name = ironborn_flavour_events.006.a
+		custom_tooltip = ironborn_flavour_events.006.a.tt
+		scope:rebel_thrall = {
+			death = {
+				killer = root
+				death_reason = death_punishment
+			}
+		}
+		add_dread = 20
+		add_prestige = 100
+		add_character_modifier = {
+			modifier = cruel_ironborn_master
+			years = 5
+		}
+		hidden_effect = {
+			random = {
+				chance = 70 
+				trigger_event = {
+					id = ironborn_flavour_events.007 
+					days = {10 30} 
+					delayed = no
+				}
+			}
+		}
+	}
+
+	#Quietly kill the offender without drawing attention.
+	option = {
+		name = ironborn_flavour_events.006.b
+		custom_tooltip = ironborn_flavour_events.006.b.tt
+		duel = {
+			skill = intrigue
+			value = 12
+			
+			15 = { #gives some Intrigue skill tree points and gives small chance of Thrall Uprising chain as the loved ones of the Thrall would still note his/her disappearance.
+				modifier = { 
+					add = scope:duel_value
+				}
+				desc = ironborn_flavour_events.006.b.success
+				scope:rebel_thrall = {
+					death = {
+						death_reason = death_accident
+					}
+				}
+				add_intrigue_lifestyle_xp = major_lifestyle_xp
+				hidden_effect = {
+					random = {
+						chance = 30 
+						trigger_event = {
+							id = ironborn_flavour_events.007 
+							days = {10 30} #placeholder
+							delayed = no
+						}
+					}
+				}
+			}
+			
+			15 = { #Failure should take a Prestige hit and give largest chance of Thrall Uprising chain triggering
+				desc = ironborn_flavour_events.006.b.failure
+				add_prestige = -100
+				hidden_effect = {
+					random = {
+						chance = 90 
+						trigger_event = {
+							id = ironborn_flavour_events.007 
+							days = {10 30} #PLACEHOLDER 
+							delayed = no
+						}
+					}
+					scope:rebel_thrall = {
+						death = {
+							death_reason = death_vanished
+						}
+					}
+				}
+			}
+		}
+	}
+
+	#Have the Thrall publicly flogged
+	option = {
+		name = ironborn_flavour_events.006.c
+		custom_tooltip = ironborn_flavour_events.006.c.tt
+		add_character_modifier = {
+			modifier = weak_ironborn_master
+			years = 5
+		}
+		add_prestige = -50
+		add_dread = -10
+		hidden_effect = {
+			random = {
+				chance = 20
+				trigger_event = {
+					id = ironborn_flavour_events.007 
+					days = {10 30} #PLACEHOLDER
+					delayed = no
+				}
+			}
+			scope:rebel_thrall = {
+				death = {
+					death_reason = death_vanished
+				}
+			}
+		}
+	}
+
+	#Bring the Thrall into your service.
+	option = {
+		name = ironborn_flavour_events.006.e
+		custom_tooltip = ironborn_flavour_events.006.e.tt
+		add_prestige = -200
+		add_legitimacy = medium_legitimacy_loss
+		add_character_modifier = {
+			modifier = weak_ironborn_master
+			years = 5
+		}
+		add_courtier = scope:rebel_thrall
+		scope:rebel_thrall = {
+			if = {
+				limit = {
+					can_add_hook = {
+						target = scope:rebel_thrall
+						type = loyalty_hook
+					}
+				}
+				add_hook = {
+					target = scope:rebel_thrall
+					type = loyalty_hook
+				}
+			}
+
+			add_opinion = {
+				target = scope:root
+				opinion = 50
+				modifier = grateful_opinion
+			}
+		}
+	}
+	#Free him
+	option = {
+		trigger = {
+			OR = {
+				has_trait = just
+				has_trait = compassionate
+				has_trait = the_new_way_follower
+			}
+		}
+		name = ironborn_flavour_events.006.f
+		add_prestige = 300
+		add_character_modifier = {
+			modifier = just_ironborn_master
+			years = 5
+		}
+		hidden_effect = {
+			scope:rebel_thrall = {
+				death = {
+					death_reason = death_vanished
+				}
+			}
+		}
+	}
+}
+
+#Thrall Uprising event chain
+#Angered over the treatment of their fellows, the thralls are planning an attack on your regal person.
+ironborn_flavour_events.007 = { 
+	type = character_event
+	title = ironborn_flavour_events.007.t
+	desc = ironborn_flavour_events.007.desc
+	theme = martial_authority_focus
+	override_background = battlefield
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+
+	#Martial/Prowess Resolution: Let the ambush proceed as planned. Why let the chance to have all your enemies in one place go to waste when you’re so confident in your ability to defeat them?
+	option = {
+		name = ironborn_flavour_events.007.a
+		duel = {
+			skill = prowess
+			value = 10
+			
+			#The ambush happens, and you defeat your foes handily. 
+			10 = { 
+				modifier = { 
+					add = scope:duel_value
+				}
+				desc = ironborn_flavour_events.007.a.success
+				add_prestige = 150
+				add_martial_lifestyle_xp = major_lifestyle_xp
+				hidden_effect = {
+					trigger_event = {
+							id = ironborn_flavour_events.010 #"good" ending of the chain
+							days = 3
+						}
+					}
+				random = {
+					chance = 30
+					add_trait = wounded_1
+				}
+			}
+			
+			#The ambush is too much for you.
+			12 = {
+				desc = ironborn_flavour_events.007.a.failure
+				add_prestige = -100
+				random_list = {
+					30 = {
+						add_trait = wounded_3
+					}
+					30 = {
+						add_trait = one_eyed
+					}
+					
+					20 = {
+						add_trait = maimed
+					}
+
+					20 = {
+						kill = root
+					}
+				}
+				hidden_effect = {
+					trigger_event = {
+						id = ironborn_flavour_events.009 #"bad" ending of the chain
+						days = 3
+					}
+				}
+			}
+		}
+	}
+	
+	#Intrigue Resolution: Key plotters are going to either be incarcerated or assassinated, leaving the thrall rebellion to fall apart before it can even fully coalesce. 
+	option = {
+		name = ironborn_flavour_events.007.b
+		duel = {
+			skill = intrigue
+			value = 10
+			#Success: The plots go off without a hitch, leaving the growing rebellion to sputter out.
+			8 = { 
+				modifier = { 
+					add = scope:duel_value
+				}
+				desc = ironborn_flavour_events.007.b.success
+				add_dread = 10
+				add_intrigue_lifestyle_xp = major_lifestyle_xp
+				hidden_effect = {
+					trigger_event = {
+						id = ironborn_flavour_events.010 #"good" ending of the chain
+						days = 3
+					}
+				}
+			}
+			#Failure: Clumsy attempts to circumvent “justice” in the realm have spurred the rebellion onward. 	
+			10 = {
+				desc = ironborn_flavour_events.007.b.failure
+				hidden_effect = {
+					trigger_event = {
+						id = ironborn_flavour_events.008 #harder variation of the prowess resolution event
+						days = 3
+					}
+				}
+			}
+		}
+	}
+
+	#Second-in-command of the thrall group has been bribed and agreed to turn coat on his compatriots. 
+	option = {
+		name = ironborn_flavour_events.007.c
+		remove_reserved_gold = 10
+		duel = {
+			skill = stewardship
+			value = 10
+			#Success: The leaders of the plot, minus the second-in-command, are turned over for justice.
+			10 = { 
+				modifier = { 
+					add = scope:duel_value
+				}
+				desc = ironborn_flavour_events.007.b.success
+				add_stewardship_lifestyle_xp = major_lifestyle_xp
+				hidden_effect = {
+					trigger_event = {
+						id = ironborn_flavour_events.010 #"good" ending of the chain
+						days = 3
+					}
+				}
+			}
+			#Failure: The Thralls took the money and ran. Steward gets beat up.	
+			10 = {
+				desc = ironborn_flavour_events.007.b.failure
+				prestige = -100
+				scope:cp:councillor_court_chaplain = {
+					add_trait = wounded_2
+				}
+				hidden_effect = {
+					trigger_event = {
+						id = ironborn_flavour_events.008 #harder variation of the prowess resolution event
+						days = 3
+					}
+				}
+			}
+		}
+	}
+
+	#Diplomacy Resolution: Attempt to meet with the bereaved under a flag of truce.
+	option = {
+		name = ironborn_flavour_events.007.d
+		duel = {
+			skill = diplomacy
+			value = 10
+
+			9 = {
+				desc = ironborn_flavour_events.007.d.success
+				modifier = { 
+					add = scope:duel_value
+				}
+				add_diplomacy_lifestyle_xp = major_lifestyle_xp
+				send_interface_toast = {
+					type = event_toast_effect_good #
+					left_icon = root
+					title = ironborn_flavour_events.007.d.success
+				}
+				add_prestige = 100
+			}
+
+			11  = {
+				desc = ironborn_flavour_events.007.d.failure
+				hidden_effect = {
+					trigger_event = {
+						id = ironborn_flavour_events.008 #harder variation of the prowess resolution event
+						days = 3
+					}
+				}
+			}
+		}
+	}
+}
+#harder combat, the choice is to fight or to flee
+ironborn_flavour_events.008 = {
+	type = character_event
+	title = ironborn_flavour_events.007.t
+	desc = ironborn_flavour_events.007.desc
+	theme = martial
+
+	left_portrait = {
+		character = root
+		animation = personality_bold
+	}
+
+	#try to fight against all odds
+	option = {
+		name = ironborn_flavour_events.008.a
+		duel = {
+			skill = martial 
+			value = 12
+			#success
+			9 = { 
+				modifier = { 
+					add = scope:duel_value
+				}
+				desc = ironborn_flavour_events.008.a.success
+				hidden_effect = {
+					trigger_event = {
+							id = ironborn_flavour_events.010 #"good" ending of the chain
+							days = 3
+						}
+					}
+				random = {
+					chance = 50
+					add_trait = wounded_1
+				}
+			}
+			
+			#The ambush is too much for you.
+			12 = {
+				desc = ironborn_flavour_events.008.a.failure
+				random_list = {
+					20 = {
+						add_trait = one_eyed
+					}
+					
+					20 = {
+						add_trait = wounded_2
+					}
+					20 = {
+						add_trait = maimed
+					}
+
+					40 = {
+						kill = root
+					}
+				}
+				hidden_effect = {
+					trigger_event = {
+						id = ironborn_flavour_events.009 #"bad" ending of the chain
+						days = 3
+					}
+				}
+			}
+		}
+	}
+	
+	#run for your life!
+	option = {
+		trigger = {
+			NOR = {
+				trait = brave 
+				trait = arrogant
+			}
+		}
+		name = ironborn_flavour_events.008.b
+		add_prestige = -200
+		random = {
+			chance = 30
+			if = {
+				has_trait = brave
+				remove_trait = brave
+				add_trait = craven
+			}
+			else_if = {
+				NOT = {
+					has_trait = craven
+				}
+				add_trait = craven
+			}
+		}
+		hidden_effect = {
+			trigger_event = {
+				id = ironborn_flavour_events.009 #"bad" ending of the chain
+				days = 3
+			}
+		}
+	}
+}
+
+#you didn't manage to crush the rebellion, and your grip on your servants is weakened
+ironborn_flavour_events.009 = {
+	type = character_event
+	title = ironborn_flavour_events.009.t
+	desc = ironborn_flavour_events.009.desc
+	theme = martial
+
+	left_portrait = {
+		character = root
+		animation = sadness
+	}
+
+	#it sucks but its too late to do anything
+	option = {
+		name = ironborn_flavour_events.009.a
+		add_prestige = -100
+		add_dread = -20
+		root.capital_county = {
+			change_county_control = -10
+		}
+		add_character_modifier = {
+			modifier = failed_to_crush_thralls
+			years = 3
+		}
+	}
+
+	#order your houshold guard to carry out mass indiscriminate executions
+	option = {
+		name = ironborn_flavour_events.009.b
+		trigger = {
+			OR = {
+				has_trait = vengeful
+				has_trait = wrathful
+				has_trait = arrogant
+				has_trait = cruel 
+				has_trait = sadistic
+			}
+		}
+		add_prestige = -100
+		add_dread = 20
+		add_character_modifier = {
+			modifier = order_mass_executions_of_thralls
+			years = 3
+		}
+	}
+}
+
+#What to Do With Surviving Thralls
+ironborn_flavour_events.010 = {
+	type = character_event
+	title = ironborn_flavour_events.010.t
+	desc = ironborn_flavour_events.010.desc
+	theme = martial
+
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	#Execute all and their surviving kin
+	option = {
+		name = ironborn_flavour_events.10.a
+		trigger = {
+			OR = {
+				has_trait = cruel 
+				has_trait = sadistic
+				has_trait = vengeful
+				has_trait = torturer
+				has_trait = arbitrary
+			}
+		}
+		add_dread = medium_dread
+		add_piety = -100
+		root.capital_county = {
+			change_county_control = 30
+		}
+	}
+
+	#Execute survivors but spare the kin
+	option = {
+		name = ironborn_flavour_events.10.b
+		add_prestige = 300
+		add_dread = 15
+		root.capital_county = {
+			change_county_control = 30
+		}
+	}
+
+	#Send them to hard labor in the mines.
+	option = {
+		name = ironborn_flavour_events.010.c
+		add_prestige = 300
+		add_character_modifier = {
+			modifier = hard_labor_for_rebel_thralls
+			years = 3
+		}
+	}
+
+	#Forgive them on the conditions of obedience and diligent service 
+	option = {
+		trigger = {
+			OR = {
+				has_trait = forgiving
+				has_trait = content 
+				has_trait = calm
+				has_trait = temperate
+				has_trait = patient
+				has_trait = compassionate
+				has_trait = fickle
+			}
+		}
+		name = ironborn_flavour_events.010.d.
+		add_prestige = 100
+		add_character_modifier = {
+			modifier = obedience_service_of_thralls
+			years = 5
+		}
+	}
+}
+##########################################
+# CHOOSE BETWEEN THE OLD AND THE NEW WAY #
+##########################################
+#Decision to choose between the old and the new way
+ironborn_flavour_events.200 = {
+	type = character_event
+	title = ironborn_flavour_events.200.t #This is the Way
+	desc = ironborn_flavour_events.200.desc
+	theme = martial
+	
+	left_portrait = {
+		character = root
+		animation = thinking
+	}
+
+	#The Old Way
+	option = {
+		name = ironborn_flavour_events.200.a
+		limit = {
+			has_religion = religion:drowned_god_religion
+		}
+		add_trait = the_old_way_follower
+
+		ai_chance = {
+			base = 65
+			#decrease the chance
+			modifier = {
+				has_trait = scholar
+				add = -80
+			}
+
+			modifier = {
+				NOT = {
+					has_faith = faith:drowned_god_main
+				}
+				add = -40
+			}
+			
+			modifier = {
+				has_character_flag = inclined_to_the_new_way
+				add = -15
+			}
+
+			modifier = {
+				has_trait = intellect_good_3
+				add = -15
+			}
+			modifier = {
+				has_trait = shrewd
+				add = -15
+			}
+			modifier = {
+				has_trait = intellect_good_2
+				add = -10
+			}
+
+			modifier = {
+				has_trait = intellect_good_1
+				add = -5
+			}
+
+			modifier = {
+				has_trait = compassionate
+				add = -15
+			}
+
+			modifier = {
+				has_trait = patient
+				add = -15
+			}
+
+			modifier = {
+				has_trait = cynical
+				add = -15
+			}
+
+			modifier = {
+				stewardship >= 16
+				add = -15
+			}
+
+			modifier = {
+				diplomacy >= 16
+				add = -15
+			}
+
+			modifier = {
+				learning >= 16
+				add = -10
+			}
+
+			modifier = {
+				has_trait = inquisitive
+				add = -10
+			}
+
+			modifier = {
+				has_trait = gallant
+				add = -10
+			}
+
+			modifier = {
+				has_trait = forgiving
+				add = -10
+			}
+
+			modifier = {
+				has_trait = humble
+				add = -10
+			}
+
+			modifier = {
+				has_trait = temperate
+				add = 10
+			}
+
+			modifier = {
+				has_trait = just
+				add = -10
+			}
+
+			modifier = {
+				has_trait = calm
+				add = -5
+			}
+
+			modifier = {
+				has_trait = content
+				add = -5
+			}
+
+			modifier = {
+				has_trait = trusting
+				add = -5
+			}
+
+			#increase the chance
+			modifier = {
+				has_trait = drowned_man
+				add = 300
+			}
+			
+			modifier = {
+				has_trait = raider
+				add = 80
+			}
+			
+
+			modifier = {
+				has_trait = zealous
+				add = 80
+			}
+
+			modifier = {
+				has_trait = arrogant
+				add = 25
+			}
+
+			modifier = {
+				has_trait = brave
+				add = 20
+			}
+
+			modifier = {
+				has_trait = cruel
+				add = 15
+			}
+
+			modifier = {
+				has_trait = sadistic
+				add = 15
+			}
+
+			modifier = {
+				has_trait = arbitrary
+				add = 15
+			}
+
+			modifier = {
+				has_trait = deceitful
+				add = 10
+			}
+
+			modifier = {
+				martial >= 16
+				add = 10
+			}
+
+			modifier = {
+				intrigue >= 16
+				add = 10
+			}
+
+			modifier = {
+				prowess >= 20
+				add = 10
+			}
+		}
+	}
+	#The New Way
+	option = {
+		name = ironborn_flavour_events.200.b
+		ai_chance = { 
+			base = 35
+		}
+		add_trait = the_new_way_follower
+	}
+
+	option = {
+		name = ironborn_flavour_events.200.c
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+
+#TODO: Smith event: add MAA maintance reduction https://ck3.paradoxwikis.com/Modifier_list
+
+#ironborn_flavour_events_100 = { #the conflict of Faith
+# 	type = character_event
+#	title = ironborn_flavour_events_100.t
+#	desc = ironborn_flavour_events_100.desc
+#	theme = faith
+#}
+
+	
+
+		
